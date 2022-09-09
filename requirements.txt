@@ -1,3 +1,4 @@
 structlog
 requests
 cython
+wheel

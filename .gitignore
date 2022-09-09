@@ -1,2 +1,5 @@
 .env
 glog/__pycache__
+GLog.egg-info
+dist
+build
