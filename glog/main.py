@@ -1,7 +1,7 @@
 """This is the main script of the project"""
 import logging
 import logging.handlers
-from glog_handler import GLogHandler
+from glog.glog_handler import GLogHandler
 import structlog
 
 

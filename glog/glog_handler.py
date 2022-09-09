@@ -2,7 +2,7 @@
 """This is the main script of the module"""
 import logging
 import re
-from notifier import Notifier
+from glog.notifier import Notifier
 
 def write(file, log):
     """Write logs to file"""
