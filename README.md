@@ -1,0 +1,1 @@
+Python logging system that allows for stream, file logging but also implements Pushover as a service to send logs to the user
