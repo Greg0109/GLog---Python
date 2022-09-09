@@ -20,6 +20,7 @@ class GLog():
             write_to_file=self.write_to_file,
             send_to_pushover=self.send_to_pushover
         ))
+        logger.level = logging.DEBUG
         return structlog.wrap_logger(logger)
     
     def info(self, msg):
