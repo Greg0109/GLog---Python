@@ -20,5 +20,6 @@ class Notifier():
         """This function sends the message"""
         return requests.post(
             'https://api.pushover.net/1/messages.json',
-            files=self.set_notifier()
+            files=self.set_notifier(),
+            timeout=300
         )

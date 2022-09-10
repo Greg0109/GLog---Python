@@ -7,19 +7,15 @@ import structlog
 
 class GLog():
     """This is the main class of the project"""
-    def __init__(self, logger_name, write_to_file=False, send_to_pushover=False):
+    def __init__(self, logger_name, config_dict):
         self.logger_name = logger_name
-        self.write_to_file = write_to_file
-        self.send_to_pushover = send_to_pushover
+        self.config_dict = config_dict
         self.logger = self.configure_logger()
 
     def configure_logger(self):
         """Configure python's standard logging"""
         logger = logging.getLogger(self.logger_name)
-        logger.addHandler(GLogHandler(
-            write_to_file=self.write_to_file,
-            send_to_pushover=self.send_to_pushover
-        ))
+        logger.addHandler(GLogHandler(self.config_dict))
         logger.level = logging.DEBUG
         return structlog.wrap_logger(logger)
     
