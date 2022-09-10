@@ -12,20 +12,19 @@ def write(file, log):
 
 class GLogHandler(logging.StreamHandler):
     """This is the main class of the module"""
-    def __init__(self, config_dict=None):
-        if config_dict is None:
-            config_dict = {}
+    def __init__(self, config_dict):
         super().__init__()
-        self.config_dict = config_dict
-        self.parse_dict()
+        self.parse_dict(config_dict)
 
-    def parse_dict(self):
+    def parse_dict(self, config_dict):
         """This method is used to parse the config_dict"""
-        self.write_to_file = self.config_dict.get('write_to_file', False)
-        self.file_name = self.config_dict.get('file_name', 'glog.log')
-        self.file_path = self.config_dict.get('file_path', '/tmp/logs/')
-        self.send_to_pushover = self.config_dict.get('send_to_pushover', False)
-        self.send_errors = self.config_dict.get('send_errors', False)
+        self.send_to_pushover = config_dict.get('send_to_pushover', False)
+        self.send_errors = config_dict.get('send_errors', False)
+        self.write_to_file = config_dict.get('write_to_file', False)
+        self.file_name = config_dict.get('file_name', 'glog.log')
+        self.file_path = config_dict.get('file_path', '/tmp/logs/')
+        self.pushover_token = config_dict.get('pushover_token', None)
+        self.pushover_user = config_dict.get('pushover_user', None)
 
     def emit(self, record):
         try:
@@ -48,9 +47,9 @@ class GLogHandler(logging.StreamHandler):
             write('/var/log/{}.log'.format(logger_name), msg_no_colors)
         if self.send_to_pushover:
             message = f'{logger_name} {msg_no_colors}'
-            Notifier(message).send_message()
+            Notifier(self.pushover_token, self.pushover_user, message)
         elif self.send_errors and (
             record.levelno == logging.ERROR or record.levelno == logging.WARNING
         ):
             message = f'{logger_name} {msg_no_colors}'
-            Notifier(message).send_message()
+            Notifier(self.pushover_token, self.pushover_user, message)
