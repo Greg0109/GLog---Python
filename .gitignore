@@ -3,3 +3,5 @@ glog/__pycache__
 GLog.egg-info
 dist
 build
+.eggs
+TODO
