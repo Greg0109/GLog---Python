@@ -2,9 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     #this will be the package name you will see, e.g. the output of 'conda list' in anaconda prompt
-    name = 'GLog', 
+    name = 'GLog',
     #some version number you may wish to add - increment this after every update
-    version='1.0', 
+    version='1.0',
+
+    setup_requires=['wheel'],
+    install_requires=['requests', 'structlog'],
   
     # Use one of the below approach to define package and/or module names:
   
