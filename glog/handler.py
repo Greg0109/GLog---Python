@@ -6,10 +6,10 @@ import os
 from glog.notifier import Notifier
 
 
-def write(file, log):
+def write(file, log, logger_name):
     """Write logs to file"""
-    with open(file, 'a+', encoding='utf-8') as file:
-        file.write(log)
+    with open(file, 'a', encoding='utf-8') as file:
+        file.write(f'[{logger_name}] - {log}\n')
 
 
 class GLogHandler(logging.StreamHandler):
@@ -50,7 +50,7 @@ class GLogHandler(logging.StreamHandler):
         logger_name = record.name
         if self.write_to_file:
             file = os.path.join(self.file_path, self.file_name)
-            write(file, msg_no_colors)
+            write(file, msg_no_colors, logger_name)
         if self.send_to_pushover:
             message = f'{logger_name} {msg_no_colors}'
             if self.send_errors and record.levelname in [
