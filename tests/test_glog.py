@@ -73,4 +73,8 @@ def test_log_something_to_pushover(config_dict_pushover, caplog):
         glog = GLog('test', config_dict_pushover)
         glog.info('This is a test')
         assert 'This is a test' in caplog.text
-        mock_post.assert_called_once()
+        mock_post.assert_called_with(
+            'https://api.pushover.net/1/messages.json',
+            files='{"api_token": "token", "user_key": "user", "message": "[test - info] This is a test"}',  # noqa: E501
+            timeout=300
+        )
