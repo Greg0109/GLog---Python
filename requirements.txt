@@ -1,4 +1,0 @@
-structlog
-requests
-cython
-wheel

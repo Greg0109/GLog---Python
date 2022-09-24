@@ -1,8 +1,13 @@
+"""Top-level package for GLog."""
 """This is the main script of the project"""
 import logging
 import logging.handlers
 from glog.handler import GLogHandler
 import structlog
+
+__author__ = """Greg Rabago"""
+__email__ = 'greg.rabago@gmail.com'
+__version__ = '0.1.0'
 
 
 class GLog():
@@ -30,4 +35,3 @@ class GLog():
     def error(self, msg):
         """Log error messages"""
         self.logger.error(msg)
-    
