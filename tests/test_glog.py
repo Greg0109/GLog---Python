@@ -75,7 +75,11 @@ def test_log_something_to_pushover(config_dict_pushover, caplog):
         assert 'This is a test' in caplog.text
         mock_post.assert_called_with(
             'https://api.pushover.net/1/messages.json',
-            files='{"api_token": "token", "user_key": "user", "message": "[test - info] This is a test"}',  # noqa: E501
+            files={
+                'token': (None, 'token'),
+                'user': (None, 'user'),
+                'message': (None, '[test - info]  This is a test')
+            },
             timeout=300
         )
 
@@ -88,6 +92,10 @@ def test_log_something_to_pushover_not_string(config_dict_pushover, caplog):
         assert '123' in caplog.text
         mock_post.assert_called_with(
             'https://api.pushover.net/1/messages.json',
-            files='{"api_token": "token", "user_key": "user", "message": "[test - info] 123"}',  # noqa: E501
+            files={
+                'token': (None, 'token'),
+                'user': (None, 'user'),
+                'message': (None, '[test - info]  123')
+            },
             timeout=300
         )

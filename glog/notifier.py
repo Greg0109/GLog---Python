@@ -6,8 +6,8 @@ from pydantic import BaseModel, StrictStr, validator
 
 class ConfigData(BaseModel):
     """This class holds the configuration data for the Pushover integration"""
-    api_token: StrictStr
-    user_key: StrictStr
+    token: StrictStr
+    user: StrictStr
     message: StrictStr
 
     @validator('message')
@@ -21,26 +21,28 @@ class ConfigData(BaseModel):
         """
         value = value.split(' ')
         logname = value[0]
-        level = value[3].replace('[', '').replace(']', '')
-        message = ' '.join(value[9:])
-        return f'[{logname} - {level}] {message}'
+        level = value[3].replace('[', '')
+        message = ' '.join(value[4:])
+        return_message = f'[{logname} - {level}] {message}'
+        return_message = return_message.replace('    ]', '').replace('  ]', '')
+        return return_message
 
 
 class Notifier():
     """This is the main class of the module"""
 
-    def __init__(self, pushover_token, pushover_user, message):
-        self.config_data = ConfigData(
-            api_token=pushover_token,
-            user_key=pushover_user,
-            message=message
-        )
+    def __init__(self, config_data):
+        self.config_data = ConfigData(**config_data)
         self.send_message()
 
     def send_message(self):
         """This function sends the message"""
         requests.post(
             'https://api.pushover.net/1/messages.json',
-            files=self.config_data.json(),
+            files={
+                'token': (None, self.config_data.token),
+                'user': (None, self.config_data.user),
+                'message': (None, self.config_data.message),
+            },
             timeout=300
         )

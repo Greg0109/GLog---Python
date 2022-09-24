@@ -56,6 +56,11 @@ class GLogHandler(logging.StreamHandler):
             if self.send_errors and record.levelname in [
                     'ERROR', 'WARNING'] or not self.send_errors:
                 try:
-                    Notifier(self.pushover_token, self.pushover_user, message)
+                    config_data = {
+                        'token': self.pushover_token,
+                        'user': self.pushover_user,
+                        'message': message
+                    }
+                    Notifier(config_data)
                 except Exception as error:  # pylint: disable=broad-except
                     print(error)
