@@ -35,7 +35,6 @@ class Notifier():
             user_key=pushover_user,
             message=message
         )
-        print(self.config_data.message)
         self.send_message()
 
     def send_message(self):
