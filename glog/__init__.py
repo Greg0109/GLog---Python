@@ -4,6 +4,10 @@ import logging.handlers
 from glog.handler import GLogHandler
 import structlog
 
+__author__ = """Greg Rabago"""
+__email__ = 'greg.rabago@gmail.com'
+__version__ = '0.1.0'
+
 
 class GLog():
     """This is the main class of the project"""
@@ -18,16 +22,15 @@ class GLog():
         logger.addHandler(GLogHandler(self.config_dict))
         logger.level = logging.DEBUG
         return structlog.wrap_logger(logger)
-    
+
     def info(self, msg):
         """Log info messages"""
         self.logger.info(msg)
-    
+
     def warning(self, msg):
         """Log warning messages"""
         self.logger.warning(msg)
-    
+
     def error(self, msg):
         """Log error messages"""
         self.logger.error(msg)
-    
