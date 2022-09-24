@@ -78,3 +78,16 @@ def test_log_something_to_pushover(config_dict_pushover, caplog):
             files='{"api_token": "token", "user_key": "user", "message": "[test - info] This is a test"}',  # noqa: E501
             timeout=300
         )
+
+
+def test_log_something_to_pushover_not_string(config_dict_pushover, caplog):
+    """This test logs something to pushover"""
+    with patch('requests.post') as mock_post:
+        glog = GLog('test', config_dict_pushover)
+        glog.info(123)
+        assert '123' in caplog.text
+        mock_post.assert_called_with(
+            'https://api.pushover.net/1/messages.json',
+            files='{"api_token": "token", "user_key": "user", "message": "[test - info] 123"}',  # noqa: E501
+            timeout=300
+        )
