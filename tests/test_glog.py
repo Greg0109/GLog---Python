@@ -73,4 +73,29 @@ def test_log_something_to_pushover(config_dict_pushover, caplog):
         glog = GLog('test', config_dict_pushover)
         glog.info('This is a test')
         assert 'This is a test' in caplog.text
-        mock_post.assert_called_once()
+        mock_post.assert_called_with(
+            'https://api.pushover.net/1/messages.json',
+            files={
+                'token': (None, 'token'),
+                'user': (None, 'user'),
+                'message': (None, '[test - info]  This is a test')
+            },
+            timeout=300
+        )
+
+
+def test_log_something_to_pushover_not_string(config_dict_pushover, caplog):
+    """This test logs something to pushover"""
+    with patch('requests.post') as mock_post:
+        glog = GLog('test', config_dict_pushover)
+        glog.info(123)
+        assert '123' in caplog.text
+        mock_post.assert_called_with(
+            'https://api.pushover.net/1/messages.json',
+            files={
+                'token': (None, 'token'),
+                'user': (None, 'user'),
+                'message': (None, '[test - info]  123')
+            },
+            timeout=300
+        )
