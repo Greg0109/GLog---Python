@@ -2,19 +2,21 @@
 """This script handles the Pushover integration"""
 import requests
 
+
 class Notifier():
     """This is the main class of the module"""
+
     def __init__(self, pushover_token, pushover_user, message):
         self.config_data = {
-            'token': pushover_token,
-            'user': pushover_user,
-            'message': message
+            'token': (None, pushover_token),
+            'user': (None, pushover_user),
+            'message': (None, message),
         }
         self.send_message()
 
     def send_message(self):
         """This function sends the message"""
-        return requests.post(
+        requests.post(
             'https://api.pushover.net/1/messages.json',
             files=self.config_data,
             timeout=300

@@ -27,6 +27,8 @@ help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+	rm -rf .env
+	rm -rf bin
 
 clean-build: ## remove build artifacts
 	rm -fr build/
@@ -88,3 +90,6 @@ install: clean ## install the package to the active Python's site-packages
 
 env-create:
 	python -m venv ./ .env
+
+install-requirements:
+	pip install -r requirements.txt

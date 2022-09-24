@@ -1,4 +1,3 @@
-"""Top-level package for GLog."""
 """This is the main script of the project"""
 import logging
 import logging.handlers
@@ -23,15 +22,15 @@ class GLog():
         logger.addHandler(GLogHandler(self.config_dict))
         logger.level = logging.DEBUG
         return structlog.wrap_logger(logger)
-    
+
     def info(self, msg):
         """Log info messages"""
         self.logger.info(msg)
-    
+
     def warning(self, msg):
         """Log warning messages"""
         self.logger.warning(msg)
-    
+
     def error(self, msg):
         """Log error messages"""
         self.logger.error(msg)

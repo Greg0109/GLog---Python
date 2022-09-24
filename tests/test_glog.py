@@ -3,22 +3,74 @@
 """Tests for `glog` package."""
 
 import pytest
-
-
-from glog import glog
+import tempfile
+from unittest.mock import patch
+from glog import GLog
 
 
 @pytest.fixture
-def response():
-    """Sample pytest fixture.
-
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
+def config_dict_no_pushover():
+    """This fixture returns a config dict without pushover integratino"""
+    return {
+        'send_to_pushover': False,
+    }
 
 
-def test_content(response):
-    """Sample pytest test function with the pytest fixture as an argument."""
-    # from bs4 import BeautifulSoup
-    # assert 'GitHub' in BeautifulSoup(response.content).title.string
+@pytest.fixture
+def config_dict_pushover():
+    """This fixture returns a config dict with pushover integration"""
+    return {
+        'send_to_pushover': True,
+        'pushover_token': 'token',
+        'pushover_user': 'user',
+    }
+
+
+@pytest.fixture
+def config_dict_pushover_errors():
+    """This fixture returns a config dict with pushover
+    integration and only sends errors"""
+    return {
+        'send_to_pushover': True,
+        'send_errors': True,
+        'pushover_token': 'token',
+        'pushover_user': 'user',
+    }
+
+
+@pytest.fixture
+def config_dict_write_to_file():
+    """This fixture returns a config dict with file integration"""
+    tempfolder = tempfile.gettempdir()
+    return {
+        'write_to_file': True,
+        'send_to_pushover': False,
+        'file_path': str(tempfolder),
+        'file_name': 'test.log',
+    }
+
+
+def test_log_something(config_dict_no_pushover, caplog):
+    """This test logs something on the console"""
+    glog = GLog('test', config_dict_no_pushover)
+    glog.info('This is a test')
+    assert 'This is a test' in caplog.text
+
+
+def test_log_something_to_file(config_dict_write_to_file, caplog):
+    """This test logs something to a file"""
+    glog = GLog('test', config_dict_write_to_file)
+    glog.info('This is a test')
+    assert 'This is a test' in caplog.text
+    with open(config_dict_write_to_file['file_path'] +
+              config_dict_write_to_file['file_name']) as file:
+        assert 'This is a test' in file.read()
+
+
+def test_log_something_to_pushover(config_dict_pushover, caplog):
+    """This test logs something to pushover"""
+    with patch('requests.post') as mock_post:
+        glog = GLog('test', config_dict_pushover)
+        glog.info('This is a test')
+        assert 'This is a test' in caplog.text
+        mock_post.assert_called_once()

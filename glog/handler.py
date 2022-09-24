@@ -2,7 +2,9 @@
 """This is the main script of the module"""
 import logging
 import re
+import os
 from glog.notifier import Notifier
+
 
 def write(file, log):
     """Write logs to file"""
@@ -12,6 +14,7 @@ def write(file, log):
 
 class GLogHandler(logging.StreamHandler):
     """This is the main class of the module"""
+
     def __init__(self, config_dict):
         super().__init__()
         self.parse_dict(config_dict)
@@ -37,19 +40,22 @@ class GLogHandler(logging.StreamHandler):
         except (KeyboardInterrupt, SystemExit) as error:
             print(error)
             raise
-        except Exception as _:  # pylint: disable=broad-except
+        except Exception as exception:  # pylint: disable=broad-except
+            print(exception)
             self.handleError(record)
 
     def file_or_push(self, record, msg):
-        msg_no_colors = re.sub(r'\x1b\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]', '', msg)
+        msg_no_colors = re.sub(
+            r'\x1b\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]', '', msg)
         logger_name = record.name
         if self.write_to_file:
-            write('/var/log/{}.log'.format(logger_name), msg_no_colors)
+            file = os.path.join(self.file_path, self.file_name)
+            write(file, msg_no_colors)
         if self.send_to_pushover:
             message = f'{logger_name} {msg_no_colors}'
-            Notifier(self.pushover_token, self.pushover_user, message)
-        elif self.send_errors and (
-            record.levelno == logging.ERROR or record.levelno == logging.WARNING
-        ):
-            message = f'{logger_name} {msg_no_colors}'
-            Notifier(self.pushover_token, self.pushover_user, message)
+            if self.send_errors and record.levelname in [
+                    'ERROR', 'WARNING'] or not self.send_errors:
+                try:
+                    Notifier(self.pushover_token, self.pushover_user, message)
+                except Exception as error:  # pylint: disable=broad-except
+                    print(error)
