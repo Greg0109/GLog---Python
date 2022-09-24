@@ -9,6 +9,7 @@ Sphinx==1.8.5
 twine==1.14.0
 structlog
 requests
+virtualenv
 
 pytest==6.2.4
 
