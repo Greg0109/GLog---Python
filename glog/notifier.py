@@ -37,12 +37,15 @@ class Notifier():
 
     def send_message(self):
         """This function sends the message"""
-        requests.post(
-            'https://api.pushover.net/1/messages.json',
-            files={
-                'token': (None, self.config_data.token),
-                'user': (None, self.config_data.user),
-                'message': (None, self.config_data.message),
-            },
-            timeout=300
-        )
+        try:
+            requests.post(
+                'https://api.pushover.net/1/messages.json',
+                files={
+                    'token': (None, self.config_data.token),
+                    'user': (None, self.config_data.user),
+                    'message': (None, self.config_data.message),
+                },
+                timeout=300
+            )
+        except requests.exceptions.RequestException as error:
+            print(error)

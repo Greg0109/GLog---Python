@@ -6,7 +6,7 @@ import structlog
 
 __author__ = """Greg Rabago"""
 __email__ = 'greg.rabago@gmail.com'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 
 class GLog():
