@@ -51,8 +51,8 @@ class GLogHandler(logging.StreamHandler):
         if self.write_to_file:
             if self.send_errors and record.levelname in [
                     'ERROR', 'WARNING'] or not self.send_errors:
-                file = os.path.join(self.file_path, self.file_name)
-                write(file, msg_no_colors, logger_name)
+                    file = os.path.join(self.file_path, self.file_name)
+                    write(file, msg_no_colors, logger_name)
         if self.send_to_pushover:
             message = f'{logger_name} {msg_no_colors}'
             if self.send_errors and record.levelname in [
