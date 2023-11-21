@@ -62,7 +62,6 @@ class GLogHandler(logging.StreamHandler):
                         'service': 'ntfy',
                         'ntfy_host': self.ntfy_host
                     }
-                    print(config_data)
                     Notifier(config_data)
                 except Exception as error:  # pylint: disable=broad-except
                     print(error)
