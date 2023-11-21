@@ -9,32 +9,28 @@ from glog import GLog
 
 
 @pytest.fixture
-def config_dict_no_pushover():
-    """This fixture returns a config dict without pushover integratino"""
+def config_dict_no_ntfy():
+    """This fixture returns a config dict without ntfy integratino"""
     return {
-        'send_to_pushover': False,
+        'send_to_ntfy': False,
     }
 
 
 @pytest.fixture
-def config_dict_pushover():
-    """This fixture returns a config dict with pushover integration"""
+def config_dict_ntfy():
+    """This fixture returns a config dict with ntfy integration"""
     return {
-        'send_to_pushover': True,
-        'pushover_token': 'token',
-        'pushover_user': 'user',
+        'send_to_ntfy': True,
     }
 
 
 @pytest.fixture
-def config_dict_pushover_errors():
-    """This fixture returns a config dict with pushover
+def config_dict_ntfy_errors():
+    """This fixture returns a config dict with ntfy
     integration and only sends errors"""
     return {
-        'send_to_pushover': True,
+        'send_to_ntfy': True,
         'send_errors': True,
-        'pushover_token': 'token',
-        'pushover_user': 'user',
     }
 
 
@@ -44,15 +40,15 @@ def config_dict_write_to_file():
     tempfolder = tempfile.gettempdir()
     return {
         'write_to_file': True,
-        'send_to_pushover': False,
+        'send_to_ntfy': False,
         'file_path': str(tempfolder),
         'file_name': 'test.log',
     }
 
 
-def test_log_something(config_dict_no_pushover, caplog):
+def test_log_something(config_dict_no_ntfy, caplog):
     """This test logs something on the console"""
-    glog = GLog('test', config_dict_no_pushover)
+    glog = GLog('test', config_dict_no_ntfy)
     glog.info('This is a test')
     assert 'This is a test' in caplog.text
 
@@ -67,34 +63,30 @@ def test_log_something_to_file(config_dict_write_to_file, caplog):
         assert 'This is a test' in file.read()
 
 
-def test_log_something_to_pushover(config_dict_pushover, caplog):
-    """This test logs something to pushover"""
+def test_log_something_to_ntfy(config_dict_ntfy, caplog):
+    """This test logs something to ntfy"""
     with patch('requests.post') as mock_post:
-        glog = GLog('test', config_dict_pushover)
+        glog = GLog('test', config_dict_ntfy)
         glog.info('This is a test')
         assert 'This is a test' in caplog.text
         mock_post.assert_called_with(
-            'https://api.pushover.net/1/messages.json',
+            'https://api.ntfy.net/1/messages.json',
             files={
-                'token': (None, 'token'),
-                'user': (None, 'user'),
                 'message': (None, '[test - info]  This is a test')
             },
             timeout=300
         )
 
 
-def test_log_something_to_pushover_not_string(config_dict_pushover, caplog):
-    """This test logs something to pushover"""
+def test_log_something_to_ntfy_not_string(config_dict_ntfy, caplog):
+    """This test logs something to ntfy"""
     with patch('requests.post') as mock_post:
-        glog = GLog('test', config_dict_pushover)
+        glog = GLog('test', config_dict_ntfy)
         glog.info(123)
         assert '123' in caplog.text
         mock_post.assert_called_with(
-            'https://api.pushover.net/1/messages.json',
+            'https://api.ntfy.net/1/messages.json',
             files={
-                'token': (None, 'token'),
-                'user': (None, 'user'),
                 'message': (None, '[test - info]  123')
             },
             timeout=300

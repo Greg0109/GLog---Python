@@ -28,7 +28,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    description="A logging system based on structlog with pushover support",
+    description="A logging system based on structlog with ntfy support",
     install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
@@ -39,6 +39,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/Greg0109/glog',
-    version='1.0.3',
+    version='3.0.3',
     zip_safe=False,
 )

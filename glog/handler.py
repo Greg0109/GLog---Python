@@ -21,13 +21,12 @@ class GLogHandler(logging.StreamHandler):
 
     def parse_dict(self, config_dict):
         """This method is used to parse the config_dict"""
-        self.send_to_pushover = config_dict.get('send_to_pushover', False)
+        self.send_to_ntfy = config_dict.get('send_to_ntfy', False)
         self.send_errors = config_dict.get('send_errors', False)
         self.write_to_file = config_dict.get('write_to_file', False)
         self.file_name = config_dict.get('file_name', 'glog.log')
         self.file_path = config_dict.get('file_path', '/tmp/logs/')
-        self.pushover_token = config_dict.get('pushover_token', None)
-        self.pushover_user = config_dict.get('pushover_user', None)
+        self.ntfy_host = config_dict.get('ntfy_host', 'https://ntfy.sh')
 
     def emit(self, record):
         try:
@@ -53,16 +52,17 @@ class GLogHandler(logging.StreamHandler):
                     'ERROR', 'WARNING'] or not self.send_errors:
                     file = os.path.join(self.file_path, self.file_name)
                     write(file, msg_no_colors, logger_name)
-        if self.send_to_pushover:
+        if self.send_to_ntfy:
             message = f'{logger_name} {msg_no_colors}'
             if self.send_errors and record.levelname in [
                     'ERROR', 'WARNING'] or not self.send_errors:
                 try:
                     config_data = {
-                        'token': self.pushover_token,
-                        'user': self.pushover_user,
-                        'message': message
+                        'message': message,
+                        'service': 'ntfy',
+                        'ntfy_host': self.ntfy_host
                     }
+                    print(config_data)
                     Notifier(config_data)
                 except Exception as error:  # pylint: disable=broad-except
                     print(error)

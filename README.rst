@@ -16,7 +16,7 @@ GLog
 
 
 
-A logging system based on structlog with pushover support
+A logging system based on structlog with ntfy support
 
 
 * Free software: MIT license

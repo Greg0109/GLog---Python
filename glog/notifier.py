@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """This script handles the Pushover integration"""
 import requests
+import json
+import os
 from pydantic import BaseModel, StrictStr, validator
 
 
 class ConfigData(BaseModel):
     """This class holds the configuration data for the Pushover integration"""
-    token: StrictStr
-    user: StrictStr
     message: StrictStr
+    service: StrictStr = 'ntfy'
+    ntfy_host: StrictStr = 'https://ntfy.sh'
 
     @validator('message')
     def reformat_message(cls, value):
@@ -26,6 +28,15 @@ class ConfigData(BaseModel):
         return_message = f'[{logname} - {level}] {message}'
         return_message = return_message.replace('    ]', '').replace('  ]', '')
         return return_message
+    
+    @validator('service')
+    def check_service(cls, value):
+        """
+        This function checks that the service is either ntfy or ntfy
+        """
+        if value not in ['ntfy', 'ntfy']:
+            raise ValueError('service must be either ntfy or ntfy')
+        return value
 
 
 class Notifier():
@@ -33,19 +44,17 @@ class Notifier():
 
     def __init__(self, config_data):
         self.config_data = ConfigData(**config_data)
-        self.send_message()
+        if self.config_data.service == 'ntfy':
+            self.send_ntfy_message()
+        else:
+            raise ValueError('service must be either ntfy or ntfy')
 
-    def send_message(self):
-        """This function sends the message"""
+    def send_ntfy_message(self):
+        """This function sends the message via ntfy"""
         try:
-            requests.post(
-                'https://api.pushover.net/1/messages.json',
-                files={
-                    'token': (None, self.config_data.token),
-                    'user': (None, self.config_data.user),
-                    'message': (None, self.config_data.message),
-                },
-                timeout=300
+            response = requests.put(
+                url = self.config_data.ntfy_host,
+                data = self.config_data.message
             )
         except requests.exceptions.RequestException as error:
             print(error)
