@@ -18,7 +18,7 @@ GLog
 
 A logging system based on structlog with ntfy support
 
-This python package had support for pushover previously, but it was removed due to pushover keeping its logs in plain text in the server while sending the notification. There might be some inconsistencies in the code due to it (for instance prints saying ntfy or ntfy support)
+This python package had support for pushover previously, but it was removed due to privacy concerns. It might be added back in a future. There might be some inconsistencies in the code due to it (for instance prints saying ntfy or ntfy support)
 
 
 * Free software: MIT license
